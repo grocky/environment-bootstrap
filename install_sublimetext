@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+source ./install_helpers
+
+# Need to figure out a way to programatically retrieve the latest version 
+buildNumber=${1}
+imageName=$(downloadSublimeText $buildNumber)
+# installSublimeText "$imageName"
+# createSymlink
+downloadPackageControl
+# installPackageControl
+# syncWithDropbox
+# cleanup
+

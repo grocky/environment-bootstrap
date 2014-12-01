@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/urlEncoder
+
+sublimeImageBase="Sublime Text Build"
+
+downloadSublimeText() {
+    buildNumber=${1:-3066}
+    imageName="${sublimeImageBase} ${buildNumber}"
+    if [ ! -e "$sublimeImageBase $buildNumber.dmg" ]; then
+        wget  http://c758482.r82.cf2.rackcdn.com/$(urlencode "${imageName}").dmg
+        echo "${imageName}"
+    fi
+}
+
+installSublimeText() {
+    imageName="$1"
+    echo $imageName.dmg
+    sudo hdiutil attach "$imageName".dmg
+    sudo installer -pkg "/Volumes/$imageName/$imageName.pkg" -target /
+    sudo hdiutil detach "/Volumes/$imageName"
+}
+
+downloadPackageControl() {
+    wget http://sublime.wbond.net/Package%20Control.sublime-package
+}
+
+installPackageControl() {
+    installedPackagesDir="~/Library/Application Support/Sublime Text 3/Installed Packages/"
+    cp "Package Control.sublime-package" $installedPackagesDir
+}
+
+createSymlink() {
+    ln -s  "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" /usr/local/bin/subl
+}
+
+syncWithDropbox() {
+    cd ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/
+    rm -r User
+    ln -s ~/Dropbox/Sublime/User
+}
+
+cleanup() {
+    rm "Sublime Text Build"*
+    rm "Package Control.sublime-package"
+}
+
+disablePressAndHold() {
+    defaults write com.sublimetext.3 ApplePressAndHoldEnabled -bool false
+}

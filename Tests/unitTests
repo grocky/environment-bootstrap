@@ -1,0 +1,38 @@
+#! /usr/bin/env bash
+
+TEST_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $TEST_DIR/../install_helpers
+
+function testDownloadSublimeText() {
+    imageName="$sublimeImageBase 3065"
+    expectedName="${imageName}.dmg"
+    output=$(downloadSublimeText 3065)
+    assertEquals "The downloaded package has the wrong build number" "$expectedName" "$(ls Sublime*)"
+    assertEquals "The image name is incorrect" "$imageName" "$output"
+    rm "$sublimeImageBase"*
+}
+ 
+function testDownloadSublimeTextDefault() {
+    imageName="$sublimeImageBase 3066"
+    expectedName="${imageName}.dmg"
+    output=$(downloadSublimeText)
+    assertEquals "The downloaded package has the wrong build number" "$expectedName" "$(ls Sublime*)"
+    assertEquals "The image name is incorrect" "$imageName" "$output"
+    rm "$sublimeImageBase"*
+}
+ 
+function testDownloadPackageControl() {
+    expectedName="Package Control.sublime-package"
+    downloadPackageControl
+    assertEquals "$expectedName" "$(ls "Package Control"*)"
+    rm "Package Control"*
+}
+
+function testInstallSublimeText() {
+    imageName="$sublimeImageBase 3066"
+    output=$(installSublimeText "$imageName")
+    assertEquals "The image name is incorrect" "$imageName".dmg "$output"
+}
+
+## Call and Run all Tests
+. shunit2
