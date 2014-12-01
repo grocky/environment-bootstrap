@@ -1,23 +1,20 @@
 #!/usr/bin/env bash
-# copied from https://gist.github.com/cdown/1163649
 
-urlencode() {
-    # urlencode <string>
- 
-    local length="${#1}"
-    for (( i = 0; i < length; i++ )); do
-        local c="${1:i:1}"
-        case $c in
-            [a-zA-Z0-9.~_-]) printf "$c" ;;
-            *) printf '%%%02X' "'$c"
-        esac
-    done
+urlencode ()
+{
+    if [ $# -eq 0 ]; then
+        echo "usage: urlencode <string>";
+        return 1;
+    fi
+    python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])" $1;
 }
- 
-urldecode() {
-    # urldecode <string>
- 
-    local url_encoded="${1//+/ }"
-    printf '%b' "${url_encoded//%/\x}"
+
+urldecode ()
+{
+    if [ $# -eq 0 ]; then
+        echo "usage: urldecode <string>";
+        return 1;
+    fi
+    python -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])" $1;
 }
 
